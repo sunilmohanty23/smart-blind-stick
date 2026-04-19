@@ -1,0 +1,341 @@
+================================================================================
+                    SMART BLIND STICK - COMPONENT LIST
+================================================================================
+Project: IoT Blind Assistive Stick
+Author: Sunil Mohanty
+
+================================================================================
+                            1. MICROCONTROLLERS
+================================================================================
+
+[1] ESP32-WROOM-32 Dev Board
+    Quantity: 1
+    Purpose: Main communication hub (GPS, GSM, GPRS, SOS, Battery monitoring)
+    Specs: Dual-core, 520KB SRAM, 4MB Flash, 3.3V logic
+    Wiring:
+        - GSM (SIM800L)  → UART1: RX=GPIO26, TX=GPIO27
+        - GPS (NEO-6M)   → UART2: RX=GPIO16, TX=GPIO17
+        - SOS Button     → GPIO5 (INPUT_PULLUP)
+        - Battery 1 ADC  → GPIO34
+        - Battery 2 ADC  → GPIO35
+
+[2] Arduino Nano (Clone)
+    Quantity: 1
+    Purpose: Real-time obstacle detection (Ultrasonic sensors, buzzer)
+    Specs: ATmega328P, 2KB SRAM, 32KB Flash, 16MHz, 5V logic
+    Wiring:
+        - Upper Ultrasonic  → TRIG=D2, ECHO=D3
+        - Lower Ultrasonic  → TRIG=D4, ECHO=D5
+        - Buzzer           → D6
+
+================================================================================
+                              2. SENSORS
+================================================================================
+
+[3] Ultrasonic Sensor HC-SR04 (Upper Obstacle)
+    Quantity: 1
+    Purpose: Detect obstacles at upper body level (head/chest)
+    Specs: Range 2-400cm, Accuracy ±3mm, 5V operation
+    Alert Logic:
+        - 100cm to 50cm  → Slow beep (300ms ON, 300ms OFF)
+        - 50cm to 0cm    → Fast beep (100ms ON, 100ms OFF)
+
+[4] Ultrasonic Sensor HC-SR04 (Lower Obstacle / Ground)
+    Quantity: 1
+    Purpose: Detect ground-level obstacles (curbs, potholes, stairs)
+    Specs: Same as above
+    Alert Logic:
+        - <20cm          → Double pulse beep
+        - Pit detection  → Continuous beep (highest priority)
+
+[5] GPS Module NEO-6M (GY-GPS6MV2)
+    Quantity: 1
+    Purpose: Get real-time location coordinates for SOS and ThingSpeak
+    Specs: 50 channels, 1Hz update, Accuracy ±2.5m, 3.3V-5V operation
+    Notes: Needs clear sky for fix, 30-60 seconds cold start time
+
+================================================================================
+                          3. COMMUNICATION MODULES
+================================================================================
+
+[6] GSM Module SIM800L
+    Quantity: 1
+    Purpose: Send SMS, make calls, send GPRS data to ThingSpeak
+    Specs: Quad-band (2G only), 3.4V-4.4V operation, 2A peak current
+    Important: 
+        - Connect DIRECT to 18650 battery (3.7V-4.2V)
+        - Do NOT use boost/buck converter
+        - Add 1000uF capacitor across VCC/GND
+        - Requires 2G network (VI or Airtel SIM - NOT Jio)
+    AT Commands Used:
+        - AT              → Check communication
+        - AT+CSQ          → Check signal quality
+        - AT+CREG?        → Check network registration
+        - AT+CMGF=1       → Set SMS text mode
+        - AT+CMGS="num"   → Send SMS
+        - ATDnumber;      → Make call
+        - AT+CIPSTART     → Start GPRS connection
+
+================================================================================
+                          4. POWER COMPONENTS
+================================================================================
+
+[7] 18650 Lithium-ion Battery (x2)
+    Quantity: 2
+    Purpose: Power all components
+    Specs: 3.7V nominal, 4.2V fully charged, 2000-3000mAh
+    Configuration Options:
+        
+        OPTION A: Single Battery (3.7V)
+        ┌─────────────────────────────────────────────────────────┐
+        │ 18650 (3.7V) ──┬──► SIM800L (DIRECT)                    │
+        │                │                                        │
+        │                └──► BOOST CONVERTER ──► 5V/7V to:       │
+        │                     • ESP32 (VIN)                       │
+        │                     • Arduino Nano (VIN)                │
+        │                     • HC-SR04 (x2)                      │
+        │                     • NEO-6M (via ESP32 3.3V)          │
+        └─────────────────────────────────────────────────────────┘
+        
+        OPTION B: Two Batteries (7.4V series)
+        ┌─────────────────────────────────────────────────────────┐
+        │ Battery1 (+) ──┬──► SIM800L (DIRECT from Battery1)      │
+        │                │                                        │
+        │ Battery1 (-) ──┼──► Battery2 (+)                        │
+        │                │                                        │
+        │ Battery2 (-) ──┴──► GND                                 │
+        │                     │                                   │
+        │ Total 7.4V ────────► BUCK CONVERTER ──► 5V to:         │
+        │                     • ESP32 (VIN)                       │
+        │                     • Arduino Nano (VIN)                │
+        │                     • HC-SR04 (x2)                      │
+        └─────────────────────────────────────────────────────────┘
+
+[8] Boost Converter (For Single Battery Option)
+    Quantity: 1
+    Purpose: Step up 3.7V to 5V or 7V for microcontrollers
+    Specs: Input 2.5V-5V, Output adjustable 5V-9V, 2A max
+    Wiring: IN → Battery, OUT → ESP32 VIN + Arduino VIN + Sensors
+
+[9] Buck Converter (For Two Battery Option)
+    Quantity: 1
+    Purpose: Step down 7.4V to stable 5V for microcontrollers
+    Specs: Input 6V-24V, Output 5V, 2A-3A max
+    Wiring: IN → Battery Series (7.4V), OUT → ESP32 VIN + Arduino VIN + Sensors
+
+[10] 1000uF Electrolytic Capacitor (16V or 25V)
+     Quantity: 1
+     Purpose: Smooth voltage spikes from GSM module during transmission
+     Placement: Across SIM800L VCC and GND (as close as possible)
+     Polarity: Positive (+) to VCC, Negative (-) to GND
+
+[11] 18650 Battery Holder
+     Quantity: 1 (1-cell or 2-cell)
+     Purpose: Hold batteries securely
+     Type: With pre-attached wires
+
+================================================================================
+                          5. OUTPUT DEVICES
+================================================================================
+
+[12] Buzzer (5V)
+     Quantity: 1
+     Purpose: Audio alerts for obstacle detection
+     Wiring: Positive → D6 (Arduino Nano), Negative → GND
+     
+     Alert Patterns:
+     ┌─────────────────────────────────────────────────────────────┐
+     │ Pattern │ Condition              │ Behavior                 │
+     ├─────────┼────────────────────────┼──────────────────────────┤
+     │ Sound1  │ Front 51-100cm         │ 300ms ON, 300ms OFF      │
+     │ Sound2  │ Front <50cm            │ 100ms ON, 100ms OFF      │
+     │ Sound3  │ Lower <20cm            │ 80ms pulse, 80ms off,    │
+     │         │                        │ 80ms pulse, 200ms off    │
+     │ Sound4  │ Pit detected           │ Continuous ON            │
+     │ Sound5  │ Both sensors <20cm     │ Custom pattern           │
+     └─────────────────────────────────────────────────────────────┘
+
+================================================================================
+                          6. INPUT & MISCELLANEOUS
+================================================================================
+
+[13] Push Button (SOS Button)
+     Quantity: 1
+     Purpose: Emergency trigger for SOS (SMS + Call to 4 numbers)
+     Type: Momentary, Normally Open
+     Wiring: One pin → GPIO5 (ESP32), Other pin → GND
+     Debouncing: Software debounce (200ms)
+
+[14] Resistors - 100kΩ (1/4 Watt)
+     Quantity: 4
+     Purpose: 
+         - 2 for voltage divider (battery monitoring)
+         - 2 for pull-up/down (if needed)
+     Color Code: Brown-Black-Yellow
+
+[15] Resistors - 220Ω (Optional - for LEDs)
+     Quantity: 3
+     Purpose: Current limiting for status LEDs
+     Color Code: Red-Red-Brown
+
+[16] Jumper Wires (Male-to-Female, Male-to-Male)
+     Quantity: 40-50 pieces
+     Purpose: Breadboard connections
+
+[17] Breadboard (400 or 800 points)
+     Quantity: 1
+     Purpose: Prototyping before final assembly
+
+[18] Cane (White cane or aluminum walking stick)
+     Quantity: 1
+     Purpose: Physical structure to mount all components
+     Type: Lightweight, foldable preferred
+
+[19] Double-sided Tape / Cable Ties
+     Quantity: 1 roll
+     Purpose: Mount components to cane
+
+================================================================================
+                          COMPLETE WIRING TABLE
+================================================================================
+
+┌────────────────────┬──────────────────────┬─────────────────────────────┐
+│ Component          │ Connected To         │ Pins                         │
+├────────────────────┼──────────────────────┼─────────────────────────────┤
+│ ESP32              │ GSM (SIM800L)        │ TX=GPIO27 → SIM800L RX       │
+│                    │                      │ RX=GPIO26 → SIM800L TX       │
+│ ESP32              │ GPS (NEO-6M)         │ TX=GPIO17 → GPS RX           │
+│                    │                      │ RX=GPIO16 → GPS TX           │
+│ ESP32              │ SOS Button           │ GPIO5 → Button, GND          │
+│ ESP32              │ Battery 1 ADC        │ GPIO34 → Voltage Divider     │
+│ ESP32              │ Battery 2 ADC        │ GPIO35 → Voltage Divider     │
+│ Arduino Nano       │ Upper Ultrasonic     │ D2(TRIG), D3(ECHO)           │
+│ Arduino Nano       │ Lower Ultrasonic     │ D4(TRIG), D5(ECHO)           │
+│ Arduino Nano       │ Buzzer               │ D6 → Positive, GND → Negative│
+│ SIM800L            │ 18650 Battery        │ VCC → Battery Positive       │
+│                    │                      │ GND → Common Ground          │
+│ SIM800L            │ Capacitor            │ 1000uF across VCC/GND        │
+│ ESP32/Nano/Sensors │ Boost/Buck Output    │ VCC to 5V/7V output          │
+│ ALL                │ Common Ground        │ Connect all GND together     │
+└────────────────────┴──────────────────────┴─────────────────────────────┘
+
+================================================================================
+                          POWER CALCULATION
+================================================================================
+
+Component                    │ Voltage │ Current (Active)
+─────────────────────────────┼─────────┼──────────────────
+ESP32-WROOM                  │ 3.3V    │ 80-150mA
+Arduino Nano                 │ 5V      │ 20-50mA
+HC-SR04 (x2)                 │ 5V      │ 30mA (each)
+NEO-6M GPS                   │ 3.3V    │ 45mA
+SIM800L (idle)               │ 4.0V    │ 20mA
+SIM800L (transmit peak)      │ 4.0V    │ 2A (brief)
+Buzzer                       │ 5V      │ 30mA
+─────────────────────────────┴─────────┴──────────────────
+Total Active (excluding GSM)           │ ~325mA
+
+Battery Life (2000mAh battery) = 2000 / 325 = ~6 hours continuous
+
+================================================================================
+                          TROUBLESHOOTING GUIDE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ISSUE: GSM module not connecting                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FIX 1: Check 2G availability (VI or Airtel SIM - NOT Jio)                  │
+│ FIX 2: Add 1000uF capacitor across VCC/GND                                 │
+│ FIX 3: Connect SIM800L DIRECT to battery (no converter)                    │
+│ FIX 4: Check battery voltage (3.7V-4.2V required)                          │
+│ FIX 5: Verify AT commands in serial monitor                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ISSUE: GPS not getting fix                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FIX 1: Go outdoors with clear sky                                          │
+│ FIX 2: Wait 2-3 minutes for first fix (cold start)                         │
+│ FIX 3: Check antenna connection                                            │
+│ FIX 4: Verify baud rate (9600) matches                                     │
+│ FIX 5: Check wiring (GPS TX → ESP32 RX=GPIO16)                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ISSUE: ESP32 resetting when GSM transmits                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FIX 1: Use separate power paths (GSM direct from battery)                  │
+│ FIX 2: Add 1000uF capacitor on SIM800L power pins                          │
+│ FIX 3: Use thicker wires for power connections                             │
+│ FIX 4: Ensure battery can deliver 2A peak current                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ISSUE: Ultrasonic sensor false readings                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FIX 1: Add 10ms delay between readings                                     │
+│ FIX 2: Implement median filter (3-5 samples)                               │
+│ FIX 3: Check for reflective surfaces nearby                                │
+│ FIX 4: Verify 5V power is stable                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ISSUE: Boost/Buck converter not providing stable voltage                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ FIX 1: Adjust potentiometer with multimeter                                │
+│ FIX 2: Check input voltage is within range                                 │
+│ FIX 3: Ensure load current is under converter rating                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                          CRITICAL RULES
+================================================================================
+
+╔═════════════════════════════════════════════════════════════════════════════╗
+║  RULE 1: SIM800L MUST connect DIRECTLY to 18650 battery (3.7V-4.2V)        ║
+║  RULE 2: Do NOT use boost/buck converter for SIM800L                        ║
+║  RULE 3: Common ground is MANDATORY for ALL components                      ║
+║  RULE 4: Add 1000uF capacitor on SIM800L power pins                         ║
+║  RULE 5: For single cell: Use boost converter for ESP32/Arduino/Sensors    ║
+║  RULE 6: For two cells: Use buck converter for ESP32/Arduino/Sensors       ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+================================================================================
+                          PRE-ASSEMBLY CHECKLIST
+================================================================================
+
+Before starting assembly, verify you have:
+
+[ ] ESP32-WROOM working (blink test)
+[ ] Arduino Nano working (blink test)
+[ ] Both ultrasonic sensors responding
+[ ] GPS module getting fix outdoors
+[ ] SIM800L connecting to network (AT commands)
+[ ] SIM card active with 2G support (VI or Airtel)
+[ ] Boost converter (for single cell) OR Buck converter (for two cells)
+[ ] 1000uF capacitor
+[ ] 18650 batteries charged (3.7V-4.2V)
+[ ] 100kΩ resistors (x4)
+[ ] SOS push button
+[ ] Buzzer working
+[ ] Cane ready for mounting
+[ ] Multimeter for voltage checking
+[ ] Jumper wires and breadboard
+
+================================================================================
+                          VOLTAGE REQUIREMENTS SUMMARY
+================================================================================
+
+Component           │ Required Voltage │ Power Source
+────────────────────┼──────────────────┼─────────────────────────────────────
+SIM800L             │ 3.4V - 4.4V      │ DIRECT from 18650 battery
+ESP32 (VIN pin)     │ 5V - 12V         │ Boost (single cell) or Buck (two cells)
+Arduino Nano (VIN)  │ 7V - 12V         │ Boost (single cell) or Buck (two cells)
+HC-SR04 (x2)        │ 5V               │ Boost/Buck converter output
+NEO-6M              │ 3.3V - 5V        │ ESP32 3.3V pin or converter
+Buzzer              │ 5V               │ Arduino Nano D6 output
+SOS Button          │ 3.3V             │ ESP32 GPIO5 with pull-up
+
+================================================================================
+                          END OF COMPONENT LIST
+================================================================================

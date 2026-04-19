@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Smart Blind Stick | Blue Harmony Dashboard</title>
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="dashboard">
+  
+  <!-- ========== HEADER SECTION ========== -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">🦯</div>
+      <div>
+        <h1>Smart Blind Stick</h1>
+        <p>ThingSpeak Live · Blue Spectrum Edition</p>
+      </div>
+    </div>
+    <div class="status-badge" id="connStatus">
+      <span class="led" id="statusLed"></span>
+      <span id="statusText">Connecting...</span>
+    </div>
+  </div>
+
+  <!-- ========== MAIN 2-COLUMN LAYOUT ========== -->
+  <div class="grid-2">
+    
+    <!-- LEFT COLUMN: MAP CARD -->
+    <div class="card">
+      <div class="card-header">
+        <i>📍</i>
+        <h3>Live Location</h3>
+      </div>
+      <div class="map-container">
+        <!-- Live status tag (overlay on map) -->
+        <div class="live-tag online" id="liveTag">
+          <span class="pulse" id="livePulse"></span>
+          <span id="liveTagText">LIVE</span>
+        </div>
+        <!-- Google Maps iframe – dynamically updated -->
+        <iframe id="mapFrame" src="https://maps.google.com/maps?q=0,0&z=15&output=embed" title="live gps"></iframe>
+        <!-- Coordinates overlay (bottom-right corner) -->
+        <div class="coord-pill" id="coordOverlay">Lat: -- | Lon: --</div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      
+      <!-- BATTERY HEALTH CARD -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <i>🔋</i>
+          <h3>Battery Health</h3>
+        </div>
+        <div class="battery-content">
+          <div class="battery-header">
+            <span class="battery-percent" id="batteryPercent">--%</span>
+            <span class="battery-status-tag" id="batteryTag">--</span>
+          </div>
+          <div class="bar-bg">
+            <div class="bar-fill" id="batteryFill"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 0.6rem; color: var(--blue-500);">
+            <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS CARD -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <i>📊</i>
+          <h3>System Status</h3>
+        </div>
+        <div class="info-grid">
+          <div class="info-tile">
+            <div class="tile-label">🌐 LATITUDE</div>
+            <div class="tile-value" id="latField">--</div>
+          </div>
+          <div class="info-tile">
+            <div class="tile-label">🌐 LONGITUDE</div>
+            <div class="tile-value" id="lonField">--</div>
+          </div>
+          <div class="info-tile">
+            <div class="tile-label">📡 DEVICE STATUS</div>
+            <div class="tile-value" id="deviceStatusField">--</div>
+          </div>
+          <div class="info-tile">
+            <div class="tile-label">🕒 LAST UPDATE</div>
+            <div class="tile-value" id="lastUpdateField" style="font-size:0.7rem;">--</div>
+          </div>
+        </div>
+        <div class="update-row">
+          <span>⏱️ Real-time sync</span>
+          <span id="staleHint" style="color:#e6a017;"></span>
+        </div>
+      </div>
+
+      <!-- BUTTONS CARD -->
+      <div class="card">
+        <div class="btn-group">
+          <button class="btn btn-primary" id="refreshBtn">🔄 Refresh Now</button>
+          <button class="btn btn-outline" id="fullMapBtn">🗺️ Open Full Map</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER SECTION ========== -->
+  <div class="footer">
+    🔄 Auto‑refresh every 15 seconds &nbsp;|&nbsp; ThingSpeak IoT &nbsp;|&nbsp; Smart assistance
+  </div>
+</div>
+
+<!-- External JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
