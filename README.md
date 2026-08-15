@@ -30,35 +30,43 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ---
 
+
+**Do not write `id="..."` after `text`.** That was unnecessary.
+
+---
+
+```text
 ## 🏗️ System Architecture
-┌─────────────────────────────────────────────────────────────────┐
-│                       SMART BLIND STICK                         │
-├─────────────────────────────┬───────────────────────────────────┤
-│        ARDUINO NANO         │              ESP32                │
-│     Real-time Control       │       Communication Hub           │
-├─────────────────────────────┼───────────────────────────────────┤
-│ • Upper Ultrasonic (D2/D3)  │ • GPS (GPIO 16/17)               │
-│ • Lower Ultrasonic (D4/D5)  │ • GSM (GPIO 26/27)               │
-│ • Buzzer (D6)               │ • SOS Button (GPIO 5)             │
-│ • Distance-based Alerts     │ • Battery ADC (GPIO 34/35)        │
-│ • Pit Detection Logic       │ • ThingSpeak via GPRS             │
-└─────────────────────────────┴───────────────────────────────────┘
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│                         SMART BLIND STICK                           │
+├──────────────────────────────┬──────────────────────────────────────┤
+│         ARDUINO NANO         │                ESP32                 │
+│       Real-time Control      │         Communication Hub            │
+├──────────────────────────────┼──────────────────────────────────────┤
+│ • Upper Ultrasonic (D2/D3)   │ • GPS (GPIO 16/17)                  │
+│ • Lower Ultrasonic (D4/D5)   │ • GSM (GPIO 26/27)                  │
+│ • Buzzer (D6)                │ • SOS Button (GPIO 5)               │
+│ • Distance-based Alerts      │ • Battery ADC (GPIO 34/35)          │
+│ • Pit Detection Logic        │ • ThingSpeak via GPRS              │
+└──────────────────────────────┴──────────────────────────────────────┘
                               │
                               │ GPRS / 2G Data
                               ▼
-                    ┌──────────────────┐
-                    │    ThingSpeak    │
-                    │     Cloud DB     │
-                    └────────┬─────────┘
-                             │
-                             │ HTTP
-                             ▼
-                    ┌──────────────────┐
-                    │ Custom Dashboard │
-                    │ • Live Map       │
-                    │ • Battery %      │
-                    └──────────────────┘
-
+                    ┌──────────────────────┐
+                    │      ThingSpeak      │
+                    │      Cloud DB        │
+                    └──────────┬───────────┘
+                               │
+                               │ HTTP
+                               ▼
+                    ┌──────────────────────┐
+                    │   Custom Dashboard   │
+                    │                      │
+                    │ • Live Map           │
+                    │ • Battery %          │
+                    └──────────────────────┘
 ---
 
 ## 🔧 Hardware Components
@@ -107,7 +115,10 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ---
 
+```text
 ## 📂 Code Structure
+
+```text
 smart-blind-stick/
 │
 ├── README.md
