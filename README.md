@@ -30,7 +30,6 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ---
 
-```text
 ## 🏗️ System Architecture
 
 ```text
@@ -62,6 +61,7 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
                     │ • Live Map           │
                     │ • Battery %          │
                     └──────────────────────┘
+```
 ---
 
 ## 🔧 Hardware Components
@@ -81,6 +81,7 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 | Cane | 1 | Physical structure |
 
 > **Full component details with wiring:** See [docs/components-list.txt](docs/components-list.txt)
+
 
 ---
 
@@ -110,7 +111,6 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ---
 
-```text
 ## 📂 Code Structure
 
 ```text
@@ -140,7 +140,7 @@ smart-blind-stick/
     ├── hardware-photo.jpg
     ├── demo-video.mp4
     └── dashboard-screenshot.jpg
-
+```
 ---
 
 ## 🚀 Installation & Setup
