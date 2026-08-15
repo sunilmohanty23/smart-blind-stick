@@ -30,11 +30,6 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ---
 
-
-**Do not write `id="..."` after `text`.** That was unnecessary.
-
----
-
 ```text
 ## 🏗️ System Architecture
 
