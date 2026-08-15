@@ -32,34 +32,32 @@ The **IoT Blind Assistive Stick** is a low-cost, dual-microcontroller assistive 
 
 ## 🏗️ System Architecture
 ┌─────────────────────────────────────────────────────────────────┐
-│ SMART BLIND STICK │
+│                       SMART BLIND STICK                         │
 ├─────────────────────────────┬───────────────────────────────────┤
-│ ARDUINO NANO │ ESP32 │
-│ (Real-time Control) │ (Communication Hub) │
+│        ARDUINO NANO         │              ESP32                │
+│     Real-time Control       │       Communication Hub           │
 ├─────────────────────────────┼───────────────────────────────────┤
-│ • Upper Ultrasonic (D2/D3) │ • GPS (GPIO16/17) │
-│ • Lower Ultrasonic (D4/D5) │ • GSM (GPIO26/27) │
-│ • Buzzer (D6) │ • SOS Button (GPIO5) │
-│ • Distance-based alerts │ • Battery ADC (GPIO34/35) │
-│ • Pit detection logic │ • ThingSpeak via GPRS │
+│ • Upper Ultrasonic (D2/D3)  │ • GPS (GPIO 16/17)               │
+│ • Lower Ultrasonic (D4/D5)  │ • GSM (GPIO 26/27)               │
+│ • Buzzer (D6)               │ • SOS Button (GPIO 5)             │
+│ • Distance-based Alerts     │ • Battery ADC (GPIO 34/35)        │
+│ • Pit Detection Logic       │ • ThingSpeak via GPRS             │
 └─────────────────────────────┴───────────────────────────────────┘
-│
-│ GPRS (2G Data)
-▼
-┌──────────────────┐
-│ ThingSpeak │
-│ (Cloud DB) │
-└────────┬─────────┘
-│
-│ HTTP
-▼
-┌──────────────────┐
-│ Custom Dashboard│
-│ • Live Map │
-│ • Battery % │
-└──────────────────┘
-
-text
+                              │
+                              │ GPRS / 2G Data
+                              ▼
+                    ┌──────────────────┐
+                    │    ThingSpeak    │
+                    │     Cloud DB     │
+                    └────────┬─────────┘
+                             │
+                             │ HTTP
+                             ▼
+                    ┌──────────────────┐
+                    │ Custom Dashboard │
+                    │ • Live Map       │
+                    │ • Battery %      │
+                    └──────────────────┘
 
 ---
 
@@ -112,31 +110,30 @@ text
 ## 📂 Code Structure
 smart-blind-stick/
 │
-├── README.md # Project documentation
-├── LICENSE # MIT License
-├── .gitignore # Protects secrets
-├── esp32_config_template.h # Configuration template
+├── README.md
+├── LICENSE
+├── .gitignore
+├── esp32_config_template.h
 │
 ├── firmware/
-│ ├── esp32_code/
-│ │ └── esp32_main.ino # ESP32 firmware
-│ └── nano_code/
-│ └── nano_obstacle.ino # Nano firmware
+│   ├── esp32_code/
+│   │   └── esp32_main.ino
+│   │
+│   └── nano_code/
+│       └── nano_obstacle.ino
 │
 ├── dashboard/
-│ ├── index.html # Web dashboard
-│ ├── style.css # Styling
-│ └── script.js # Map & API logic
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
 │
 ├── docs/
-│ └── components-list.txt # Hardware details
+│   └── components-list.txt
 │
 └── media/
-├── hardware-photo.jpg # Device photo
-├── demo-video.mp4 # Working demo
-└── dashboard-screenshot.jpg # Dashboard preview
-
-text
+    ├── hardware-photo.jpg
+    ├── demo-video.mp4
+    └── dashboard-screenshot.jpg
 
 ---
 
