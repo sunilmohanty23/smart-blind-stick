@@ -1,7 +1,19 @@
-# 🦯 Smart Blind Stick
+# 🦯 Smart Blind Navigation Stick
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Platform](https://img.shields.io/badge/Platform-ESP32%20%7C%20Arduino%20Nano-blue)]()
+<p align="center">
+
+[![Platform](https://img.shields.io/badge/Platform-ESP32%20%7C%20Arduino%20Nano-blue?style=for-the-badge)]()
+[![Language](https://img.shields.io/badge/Language-C%2FC%2B%2B-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)]()
+[![IoT](https://img.shields.io/badge/IoT-ThingSpeak-00A86B?style=for-the-badge)](https://thingspeak.com/)
+[![GPS](https://img.shields.io/badge/GPS-NEO--6M-orange?style=for-the-badge)]()
+[![GSM](https://img.shields.io/badge/GSM-SIM800L-red?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+</p>
+
+---
+
+> A low-cost IoT assistive device combining real-time obstacle detection, GPS tracking, emergency communication, and remote monitoring.
 
 ---
 
